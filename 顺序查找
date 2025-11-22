@@ -1,0 +1,15 @@
+#include <stdio.h>  // 包含标准输入输出库，用于printf等函数
+#include <stdlib.h> // 包含标准库函数
+
+// 顺序查找函数
+int sequentialSearch(int arr[], int n, int target) { // 定义顺序查找函数，接收数组、数组大小和目标值
+    int i; // 声明循环变量i
+
+    for (i = 0; i < n; i++) { // 从数组第一个元素开始遍历到数组末尾
+        if (arr[i] == target) { // 检查当前元素是否等于目标值
+            return i; // 如果找到目标值，返回当前元素的索引
+        }
+    }
+    
+    return -1; // 如果遍历完整个数组都没有找到目标值，返回-1表示未找到
+}
