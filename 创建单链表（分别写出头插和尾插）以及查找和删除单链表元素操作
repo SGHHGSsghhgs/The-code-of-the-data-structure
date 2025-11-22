@@ -1,0 +1,140 @@
+#include <stdio.h>  // 包含标准输入输出库
+#include <stdlib.h> // 包含标准库函数，如malloc和free
+
+// 定义单链表节点结构体
+struct ListNode { // 定义ListNode结构体
+    int data;                    // 定义整型变量存储节点数据
+    struct ListNode* next;      // 定义指向下一个节点的指针
+};
+
+// 创建新节点
+struct ListNode* createNode(int data) { // 定义创建新节点的函数
+    struct ListNode* newNode = (struct ListNode*)malloc(sizeof(struct ListNode)); // 动态分配新节点的内存
+    if (newNode == NULL) { // 检查内存分配是否成功
+        printf("内存分配失败\n"); // 如果分配失败，输出错误信息
+        return NULL; // 返回NULL表示失败
+    }
+    newNode->data = data; // 将数据值存储到新节点
+    newNode->next = NULL; // 将新节点的next指针设置为NULL
+    return newNode; // 返回新创建的节点指针
+}
+
+// 头插法创建单链表
+struct ListNode* insertAtHead(struct ListNode* head, int data) { // 定义头插函数，接收原头节点和要插入的数据
+    struct ListNode* newNode = createNode(data); // 创建新节点
+    if (newNode == NULL) { // 检查节点创建是否成功
+        return head; // 如果创建失败，返回原头节点
+    }
+    newNode->next = head; // 将新节点的next指针指向原来的头节点
+    return newNode; // 返回新节点作为新的头节点
+}
+
+// 尾插法创建单链表
+struct ListNode* insertAtTail(struct ListNode* head, int data) { // 定义尾插函数，接收头节点和要插入的数据
+    struct ListNode* newNode = createNode(data); // 创建新节点
+    if (newNode == NULL) { // 检查节点创建是否成功
+        return head; // 如果创建失败，返回原头节点
+    }
+    
+    if (head == NULL) { // 如果链表为空
+        return newNode; // 新节点成为头节点
+    }
+    
+    struct ListNode* current = head; // 从头节点开始遍历
+    while (current->next != NULL) { // 遍历到链表末尾
+        current = current->next; // 指针向后移动
+    }
+    current->next = newNode; // 将新节点连接到链表末尾
+    return head; // 返回原头节点
+}
+
+// 查找单链表中的元素
+struct ListNode* search(struct ListNode* head, int target) { // 定义查找函数，接收头节点和目标值
+    struct ListNode* current = head; // 从头节点开始遍历
+    while (current != NULL) { // 当当前节点不为空时循环
+        if (current->data == target) { // 如果当前节点的数据等于目标值
+            return current; // 返回当前节点的指针
+        }
+        current = current->next; // 指针向后移动到下一个节点
+    }
+    return NULL; // 如果未找到目标值，返回NULL
+}
+
+// 删除单链表中的元素（删除第一个匹配的节点）
+struct ListNode* deleteNode(struct ListNode* head, int target) { // 定义删除函数，接收头节点和要删除的目标值
+    if (head == NULL) { // 检查链表是否为空
+        return head; // 如果链表为空，返回原头节点
+    }
+    
+    // 如果要删除的是头节点
+    if (head->data == target) { // 检查头节点是否是要删除的节点
+        struct ListNode* temp = head; // 保存原头节点
+        head = head->next; // 将头节点更新为下一个节点
+        free(temp); // 释放原头节点的内存
+        temp = NULL; // 将指针设置为NULL，避免悬空指针
+        return head; // 返回新的头节点
+    }
+    
+    struct ListNode* current = head; // 从头节点开始遍历
+    // 查找要删除节点的前一个节点
+    while (current->next != NULL && current->next->data != target) { // 当下一个节点不为空且不是目标节点时循环
+        current = current->next; // 指针向后移动
+    }
+    
+    // 如果找到了要删除的节点
+    if (current->next != NULL) { // 检查是否找到了目标节点
+        struct ListNode* nodeToDelete = current->next; // 保存要删除的节点
+        current->next = current->next->next; // 跳过要删除的节点
+        free(nodeToDelete); // 释放要删除节点的内存
+        nodeToDelete = NULL; // 将指针设置为NULL，避免悬空指针
+    }
+    
+    return head; // 返回头节点
+}
+
+// 打印单链表
+void printList(struct ListNode* head) { // 定义打印链表的函数
+    struct ListNode* current = head; // 从头节点开始遍历
+    while (current != NULL) { // 当当前节点不为空时循环
+        printf("%d ", current->data); // 输出当前节点的数据
+        current = current->next; // 指针向后移动到下一个节点
+    }
+    printf("\n"); // 输出换行符
+}
+
+int main() { // 主函数入口
+    struct ListNode* head = NULL; // 声明链表头节点指针，初始化为NULL
+    
+    // 使用头插法创建链表
+    printf("使用头插法创建链表: "); // 输出提示信息
+    head = insertAtHead(head, 3); // 在头部插入元素3
+    head = insertAtHead(head, 2); // 在头部插入元素2
+    head = insertAtHead(head, 1); // 在头部插入元素1
+    printList(head); // 打印链表（输出: 1 2 3）
+    
+    // 使用尾插法创建链表
+    printf("使用尾插法创建链表: "); // 输出提示信息
+    struct ListNode* tailHead = NULL; // 声明另一个链表头节点指针
+    tailHead = insertAtTail(tailHead, 1); // 在尾部插入元素1
+    tailHead = insertAtTail(tailHead, 2); // 在尾部插入元素2
+    tailHead = insertAtTail(tailHead, 3); // 在尾部插入元素3
+    printList(tailHead); // 打印链表（输出: 1 2 3）
+    
+    // 查找元素
+    int target = 2; // 设置要查找的目标值
+    struct ListNode* found = search(head, target); // 调用查找函数
+    if (found != NULL) { // 检查是否找到目标节点
+        printf("找到了元素 %d\n", target); // 输出找到信息
+    } else {
+        printf("未找到元素 %d\n", target); // 输出未找到信息
+    }
+    
+    // 删除元素
+    printf("删除元素2前: "); // 输出提示信息
+    printList(head); // 打印删除前的链表
+    head = deleteNode(head, 2); // 删除值为2的节点
+    printf("删除元素2后: "); // 输出提示信息
+    printList(head); // 打印删除后的链表
+    
+    return 0; // 返回0表示程序正常结束
+}
