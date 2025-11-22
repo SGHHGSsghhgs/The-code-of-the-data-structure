@@ -1,0 +1,118 @@
+#include <stdio.h>  // 包含标准输入输出库
+#include <stdlib.h> // 包含标准库函数，如malloc和free
+
+#define MAX_SIZE 100 // 定义队列的最大容量
+
+// 定义双端队列结构体
+struct Deque { // 定义Deque结构体（双端队列）
+    int data[MAX_SIZE]; // 定义整型数组作为队列的存储空间
+    int front;          // 定义队首指针，记录队首元素的索引
+    int rear;           // 定义队尾指针，记录队尾元素的索引
+};
+
+// 初始化双端队列
+void initDeque(struct Deque* deque) { // 定义初始化双端队列的函数
+    deque->front = -1; // 将队首指针设置为-1，表示队列为空
+    deque->rear = -1;  // 将队尾指针设置为-1，表示队列为空
+}
+
+// 判断双端队列是否为空
+int isEmpty(struct Deque* deque) { // 定义判断队列是否为空的函数
+    return deque->front == -1; // 如果队首指针为-1，返回1（真），否则返回0（假）
+}
+
+// 判断双端队列是否已满
+int isFull(struct Deque* deque) { // 定义判断队列是否已满的函数
+    return (deque->rear + 1) % MAX_SIZE == deque->front; // 使用循环队列的满条件判断
+}
+
+// 从队尾入队
+void addRear(struct Deque* deque, int value) { // 定义从队尾添加元素的函数
+    if (isFull(deque)) { // 检查队列是否已满
+        printf("队列已满\n"); // 如果队满，输出错误信息
+        return; // 返回，不执行入队操作
+    }
+    
+    if (isEmpty(deque)) { // 如果队列为空（第一次添加元素）
+        deque->front = 0; // 设置队首指针为0
+        deque->rear = 0;  // 设置队尾指针为0
+    } else {
+        deque->rear = (deque->rear + 1) % MAX_SIZE; // 队尾指针向后移动一位（循环）
+    }
+    deque->data[deque->rear] = value; // 将新值存储到队尾位置
+}
+
+// 从队首出队
+int removeFront(struct Deque* deque) { // 定义从队首删除元素的函数
+    if (isEmpty(deque)) { // 检查队列是否为空
+        printf("队列为空\n"); // 如果队空，输出错误信息
+        return -1; // 返回-1表示错误
+    }
+    
+    int value = deque->data[deque->front]; // 获取队首元素的值
+    
+    if (deque->front == deque->rear) { // 如果队列中只有一个元素
+        deque->front = -1; // 重置队首指针为-1
+        deque->rear = -1;  // 重置队尾指针为-1
+    } else {
+        deque->front = (deque->front + 1) % MAX_SIZE; // 队首指针向后移动一位（循环）
+    }
+    return value; // 返回队首元素的值
+}
+
+// 正向遍历双端队列（从队首到队尾）
+void forwardTraversal(struct Deque* deque) { // 定义正向遍历函数
+    if (isEmpty(deque)) { // 检查队列是否为空
+        printf("队列为空，无法遍历\n"); // 如果队空，输出提示信息
+        return; // 返回
+    }
+    
+    printf("正向遍历（从队首到队尾）: "); // 输出遍历方向提示
+    int i = deque->front; // 从队首开始遍历
+    while (1) { // 无限循环
+        printf("%d ", deque->data[i]); // 输出当前元素
+        if (i == deque->rear) { // 如果当前索引等于队尾索引，说明遍历完成
+            break; // 跳出循环
+        }
+        i = (i + 1) % MAX_SIZE; // 索引向后移动一位（循环）
+    }
+    printf("\n"); // 输出换行符
+}
+
+// 反向遍历双端队列（从队尾到队首）
+void backwardTraversal(struct Deque* deque) { // 定义反向遍历函数
+    if (isEmpty(deque)) { // 检查队列是否为空
+        printf("队列为空，无法遍历\n"); // 如果队空，输出提示信息
+        return; // 返回
+    }
+    
+    printf("反向遍历（从队尾到队首）: "); // 输出遍历方向提示
+    int i = deque->rear; // 从队尾开始遍历
+    while (1) { // 无限循环
+        printf("%d ", deque->data[i]); // 输出当前元素
+        if (i == deque->front) { // 如果当前索引等于队首索引，说明遍历完成
+            break; // 跳出循环
+        }
+        i = (i - 1 + MAX_SIZE) % MAX_SIZE; // 索引向前移动一位（循环，注意处理负数情况）
+    }
+    printf("\n"); // 输出换行符
+}
+
+int main() { // 主函数入口
+    struct Deque deque; // 声明一个双端队列变量
+    initDeque(&deque); // 初始化双端队列
+    
+    // 添加一些元素到队列中
+    printf("添加元素: 1, 2, 3, 4, 5\n"); // 输出操作提示
+    addRear(&deque, 1); // 向队尾添加元素1
+    addRear(&deque, 2); // 向队尾添加元素2
+    addRear(&deque, 3); // 向队尾添加元素3
+    addRear(&deque, 4); // 向队尾添加元素4
+    addRear(&deque, 5); // 向队尾添加元素5
+    
+    // 执行双端队列遍历
+    forwardTraversal(&deque);  // 调用正向遍历函数
+    backwardTraversal(&deque); // 调用反向遍历函数
+    
+    return 0; // 返回0表示程序正常结束
+}
