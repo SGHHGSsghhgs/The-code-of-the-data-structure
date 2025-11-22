@@ -1,0 +1,97 @@
+#include <stdio.h>  // 包含标准输入输出库
+#include <stdlib.h> // 包含标准库函数
+
+#define MAX_SIZE 100 // 定义顺序表的最大容量
+
+// 定义顺序表结构体
+struct SeqList { // 定义SeqList结构体
+    int data[MAX_SIZE]; // 定义整型数组存储数据元素
+    int length;         // 定义整型变量记录当前表的长度
+};
+
+// 初始化顺序表
+void initList(struct SeqList* list) { // 定义初始化顺序表的函数
+    list->length = 0; // 将表长度初始化为0
+}
+
+// 在顺序表末尾添加元素
+void append(struct SeqList* list, int value) { // 定义在表末尾添加元素的函数
+    if (list->length < MAX_SIZE) { // 检查表是否未满
+        list->data[list->length] = value; // 将值添加到表的末尾
+        list->length++; // 表长度加1
+    }
+}
+
+// 合并两个有序顺序表
+void mergeLists(struct SeqList* list1, struct SeqList* list2, struct SeqList* result) { // 定义合并函数
+    int i = 0, j = 0, k = 0; // 定义三个索引变量：i用于list1，j用于list2，k用于result
+    
+    // 比较两个表的元素，将较小的元素放入结果表
+    while (i < list1->length && j < list2->length) { // 当两个表都还有元素未处理时循环
+        if (list1->data[i] <= list2->data[j]) { // 如果list1当前元素小于等于list2当前元素
+            result->data[k] = list1->data[i]; // 将list1的当前元素复制到结果表
+            i++; // list1的索引向后移动
+        } else {
+            result->data[k] = list2->data[j]; // 将list2的当前元素复制到结果表
+            j++; // list2的索引向后移动
+        }
+        k++; // 结果表的索引向后移动
+    }
+    
+    // 将list1中剩余的元素复制到结果表
+    while (i < list1->length) { // 当list1还有剩余元素时
+        result->data[k] = list1->data[i]; // 将剩余元素复制到结果表
+        i++; // list1的索引向后移动
+        k++; // 结果表的索引向后移动
+    }
+    
+    // 将list2中剩余的元素复制到结果表
+    while (j < list2->length) { // 当list2还有剩余元素时
+        result->data[k] = list2->data[j]; // 将剩余元素复制到结果表
+        j++; // list2的索引向后移动
+        k++; // 结果表的索引向后移动
+    }
+    
+    result->length = k; // 设置结果表的长度为k
+}
+
+// 打印顺序表
+void printList(struct SeqList* list) { // 定义打印顺序表的函数
+    for (int i = 0; i < list->length; i++) { // 遍历顺序表的所有元素
+        printf("%d ", list->data[i]); // 输出当前元素
+    }
+    printf("\n"); // 输出换行符
+}
+
+int main() { // 主函数入口
+    struct SeqList list1, list2, result; // 声明三个顺序表变量
+    
+    initList(&list1); // 初始化第一个顺序表
+    initList(&list2); // 初始化第二个顺序表
+    initList(&result); // 初始化结果顺序表
+    
+    // 为第一个有序顺序表添加元素
+    printf("第一个有序顺序表: "); // 输出提示信息
+    append(&list1, 1); // 添加元素1
+    append(&list1, 3); // 添加元素3
+    append(&list1, 5); // 添加元素5
+    append(&list1, 7); // 添加元素7
+    printList(&list1); // 打印第一个表
+    
+    // 为第二个有序顺序表添加元素
+    printf("第二个有序顺序表: "); // 输出提示信息
+    append(&list2, 2); // 添加元素2
+    append(&list2, 4); // 添加元素4
+    append(&list2, 6); // 添加元素6
+    append(&list2, 8); // 添加元素8
+    printList(&list2); // 打印第二个表
+    
+    // 合并两个有序顺序表
+    mergeLists(&list1, &list2, &result); // 调用合并函数
+    
+    // 输出合并后的结果
+    printf("合并后的有序顺序表: "); // 输出提示信息
+    printList(&result); // 打印结果表
+    
+    return 0; // 返回0表示程序正常结束
+}
