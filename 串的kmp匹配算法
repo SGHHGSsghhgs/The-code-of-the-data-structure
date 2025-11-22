@@ -1,0 +1,64 @@
+#include <stdio.h>  // 包含标准输入输出库
+#include <stdlib.h> // 包含标准库函数
+#include <string.h> // 包含字符串处理函数
+
+// 计算模式串的next数组（部分匹配表）
+void computeNext(char* pattern, int* next, int patternLen) { // 定义计算next数组的函数
+    int len = 0; // 初始化最长相同前后缀的长度为0
+    int i = 1;   // 从模式串的第二个字符开始计算next值
+    
+    next[0] = 0; // 第一个字符的next值为0（没有前缀）
+    
+    while (i < patternLen) { // 遍历模式串的每个字符
+        if (pattern[i] == pattern[len]) { // 如果当前字符与最长前缀的下一个字符相同
+            len++; // 最长相同前后缀长度加1
+            next[i] = len; // 将当前长度作为next值
+            i++; // 移动到下一个字符
+        } else { // 如果当前字符与最长前缀的下一个字符不同
+            if (len != 0) { // 如果最长前缀长度不为0
+                len = next[len - 1]; // 回退到前一个位置的next值，寻找更短的相同前后缀
+            } else { // 如果最长前缀长度为0
+                next[i] = 0; // 当前位置的next值为0
+                i++; // 移动到下一个字符
+            }
+        }
+    }
+}
+
+// KMP字符串匹配算法
+int KMP(char* text, char* pattern) { // 定义KMP匹配函数，接收主串text和模式串pattern
+    int textLen = strlen(text);    // 获取主串的长度
+    int patternLen = strlen(pattern); // 获取模式串的长度
+    
+    if (patternLen == 0) return 0; // 如果模式串为空，返回0（匹配成功）
+    
+    // 动态分配next数组空间
+    int* next = (int*)malloc(patternLen * sizeof(int)); // 为next数组分配内存空间
+    
+    // 计算next数组
+    computeNext(pattern, next, patternLen); // 调用函数计算模式串的next数组
+    
+    int i = 0; // 主串的索引
+    int j = 0; // 模式串的索引
+    
+    while (i < textLen) { // 当主串索引未超出范围时循环
+        if (pattern[j] == text[i]) { // 如果当前字符匹配
+            i++; // 主串索引向后移动
+            j++; // 模式串索引向后移动
+        }
+        
+        if (j == patternLen) { // 如果模式串的所有字符都匹配完成
+            free(next); // 释放next数组占用的内存
+            return (i - j); // 返回匹配开始的位置索引
+        } else if (i < textLen && pattern[j] != text[i]) { // 如果当前字符不匹配且主串未结束
+            if (j != 0) { // 如果模式串索引不为0
+                j = next[j - 1]; // 根据next数组回退模式串索引
+            } else { // 如果模式串索引为0
+                i++; // 主串索引向后移动一位
+            }
+        }
+    }
+    
+    free(next); // 释放next数组占用的内存
+    return -1; // 如果没有找到匹配，返回-1
+}
