@@ -1,0 +1,103 @@
+#include <stdio.h>  // 包含标准输入输出库
+#include <stdlib.h> // 包含标准库函数，如malloc和free
+
+// 定义链表节点结构体
+struct ListNode { // 定义ListNode结构体
+    int data;                    // 定义整型变量存储节点数据
+    struct ListNode* next;      // 定义指向下一个节点的指针
+};
+
+// 创建新节点
+struct ListNode* createNode(int data) { // 定义创建新节点的函数
+    struct ListNode* newNode = (struct ListNode*)malloc(sizeof(struct ListNode)); // 动态分配新节点的内存
+    if (newNode == NULL) { // 检查内存分配是否成功
+        printf("内存分配失败\n"); // 如果分配失败，输出错误信息
+        return NULL; // 返回NULL表示失败
+    }
+    newNode->data = data; // 将数据值存储到新节点
+    newNode->next = NULL; // 将新节点的next指针设置为NULL
+    return newNode; // 返回新创建的节点指针
+}
+
+// 合并两个有序链表
+struct ListNode* mergeLists(struct ListNode* list1, struct ListNode* list2) { // 定义合并函数，接收两个有序链表的头节点
+    // 创建一个虚拟头节点，简化操作
+    struct ListNode dummy; // 创建虚拟节点
+    struct ListNode* current = &dummy; // 创建当前节点指针，初始指向虚拟节点
+    
+    // 比较两个链表的节点，将较小的节点连接到结果链表
+    while (list1 != NULL && list2 != NULL) { // 当两个链表都还有节点时循环
+        if (list1->data <= list2->data) { // 如果list1当前节点的数据小于等于list2当前节点的数据
+            current->next = list1; // 将list1当前节点连接到结果链表
+            list1 = list1->next; // list1指针向后移动到下一个节点
+        } else {
+            current->next = list2; // 将list2当前节点连接到结果链表
+            list2 = list2->next; // list2指针向后移动到下一个节点
+        }
+        current = current->next; // 当前指针向后移动到刚连接的节点
+    }
+    
+    // 连接剩余的节点
+    if (list1 != NULL) { // 如果list1还有剩余节点
+        current->next = list1; // 将list1剩余部分连接到结果链表
+    } else { // 如果list2还有剩余节点
+        current->next = list2; // 将list2剩余部分连接到结果链表
+    }
+    
+    return dummy.next; // 返回真正的头节点（跳过虚拟节点）
+}
+
+// 在链表末尾添加节点
+void append(struct ListNode** head, int data) { // 定义在链表末尾添加节点的函数
+    struct ListNode* newNode = createNode(data); // 创建新节点
+    if (*head == NULL) { // 如果链表为空
+        *head = newNode; // 新节点成为头节点
+        return; // 返回
+    }
+    
+    struct ListNode* current = *head; // 从头节点开始遍历
+    while (current->next != NULL) { // 遍历到链表末尾
+        current = current->next; // 指针向后移动
+    }
+    current->next = newNode; // 将新节点连接到链表末尾
+}
+
+// 打印链表
+void printList(struct ListNode* head) { // 定义打印链表的函数
+    struct ListNode* current = head; // 从头节点开始遍历
+    while (current != NULL) { // 当当前节点不为空时循环
+        printf("%d ", current->data); // 输出当前节点的数据
+        current = current->next; // 指针向后移动到下一个节点
+    }
+    printf("\n"); // 输出换行符
+}
+
+int main() { // 主函数入口
+    struct ListNode* list1 = NULL; // 声明第一个链表的头节点指针，初始化为NULL
+    struct ListNode* list2 = NULL; // 声明第二个链表的头节点指针，初始化为NULL
+    
+    // 为第一个有序链表添加元素
+    printf("第一个有序链表: "); // 输出提示信息
+    append(&list1, 1); // 添加元素1
+    append(&list1, 3); // 添加元素3
+    append(&list1, 5); // 添加元素5
+    append(&list1, 7); // 添加元素7
+    printList(list1); // 打印第一个链表
+    
+    // 为第二个有序链表添加元素
+    printf("第二个有序链表: "); // 输出提示信息
+    append(&list2, 2); // 添加元素2
+    append(&list2, 4); // 添加元素4
+    append(&list2, 6); // 添加元素6
+    append(&list2, 8); // 添加元素8
+    printList(list2); // 打印第二个链表
+    
+    // 合并两个有序链表
+    struct ListNode* result = mergeLists(list1, list2); // 调用合并函数
+    
+    // 输出合并后的结果
+    printf("合并后的有序链表: "); // 输出提示信息
+    printList(result); // 打印合并后的链表
+    
+    return 0; // 返回0表示程序正常结束
+}
