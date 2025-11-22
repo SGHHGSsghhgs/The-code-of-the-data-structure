@@ -1,0 +1,55 @@
+#include <stdio.h>  // 包含标准输入输出库
+#include <stdlib.h> // 包含标准库函数，如malloc和free
+
+// 定义二叉查找树节点结构
+struct TreeNode { // 定义TreeNode结构体
+    int data;              // 节点存储的数据值
+    struct TreeNode* left;  // 指向左子节点的指针
+    struct TreeNode* right; // 指向右子节点的指针
+};
+
+// 创建新节点的函数
+struct TreeNode* createNode(int data) { // 定义创建新节点的函数
+    struct TreeNode* newNode = (struct TreeNode*)malloc(sizeof(struct TreeNode)); // 动态分配内存给新节点
+    newNode->data = data;      // 将传入的数据值赋给新节点的data字段
+    newNode->left = NULL;      // 初始化左子节点指针为NULL
+    newNode->right = NULL;     // 初始化右子节点指针为NULL
+    return newNode;            // 返回新创建的节点指针
+}
+
+// 向二叉查找树插入节点的函数
+struct TreeNode* insert(struct TreeNode* root, int data) { // 定义插入函数，接收根节点和要插入的数据
+    if (root == NULL) { // 如果根节点为空（树为空或到达叶子节点的子位置）
+        return createNode(data); // 创建新节点并返回作为新的根节点
+    }
+    
+    if (data < root->data) { // 如果插入的数据小于当前节点的数据
+        root->left = insert(root->left, data); // 递归插入到左子树
+    } else if (data > root->data) { // 如果插入的数据大于当前节点的数据
+        root->right = insert(root->right, data); // 递归插入到右子树
+    }
+    // 如果数据等于当前节点数据，不插入重复值
+    return root; // 返回根节点指针
+}
+
+// 在二叉查找树中查找节点的函数
+struct TreeNode* search(struct TreeNode* root, int data) { // 定义查找函数，接收根节点和目标数据
+    if (root == NULL || root->data == data) { // 如果根节点为空或找到目标数据
+        return root; // 返回当前节点指针（如果没找到则返回NULL，如果找到则返回节点指针）
+    }
+    
+    if (data < root->data) { // 如果目标数据小于当前节点数据
+        return search(root->left, data); // 递归在左子树中查找
+    }
+    
+    return search(root->right, data); // 否则递归在右子树中查找
+}
+
+// 中序遍历二叉查找树（按升序输出）
+void inorderTraversal(struct TreeNode* root) { // 定义中序遍历函数
+    if (root != NULL) { // 如果当前节点不为空
+        inorderTraversal(root->left);  // 递归遍历左子树
+        printf("%d ", root->data);     // 访问当前节点（输出数据）
+        inorderTraversal(root->right); // 递归遍历右子树
+    }
+}
