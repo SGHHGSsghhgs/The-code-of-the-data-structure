@@ -1,0 +1,37 @@
+#include <stdio.h>  // 包含标准输入输出库
+#include <stdlib.h> // 包含标准库函数，如malloc和free
+#include <string.h> // 包含字符串处理函数，如strlen和strcpy
+
+// 定义包含动态字符串和长度的结构体
+struct DynamicString { // 定义DynamicString结构体
+    char* str;    // 定义字符指针，用于指向动态分配的字符串内存
+    int length;   // 定义整型变量存储字符串的实际长度
+};
+
+int main() { // 主函数入口
+    struct DynamicString s; // 声明一个DynamicString类型的结构体变量s
+    char input[100]; // 声明一个临时字符数组用于接收用户输入
+    
+    printf("请输入一个字符串: "); // 输出提示信息
+    scanf("%s", input); // 从标准输入读取字符串并存储到临时数组中
+    
+    s.length = strlen(input); // 调用strlen函数计算输入字符串的长度
+    
+    // 动态分配内存来存储字符串（包括结束符'\0'）
+    s.str = (char*)malloc((s.length + 1) * sizeof(char)); // 分配足够的内存空间存储字符串和结束符
+    
+    if (s.str == NULL) { // 检查内存分配是否成功
+        printf("内存分配失败\n"); // 如果分配失败，输出错误信息
+        return 1; // 返回1表示程序异常结束
+    }
+    
+    strcpy(s.str, input); // 将临时数组中的字符串复制到动态分配的内存中
+    
+    printf("字符串内容: %s\n", s.str); // 输出字符串内容
+    printf("字符串长度: %d\n", s.length); // 输出字符串长度
+    
+    free(s.str); // 释放动态分配的字符串内存
+    s.str = NULL; // 将指针设置为NULL，避免悬空指针
+    
+    return 0; // 返回0表示程序正常结束
+}
