@@ -1,0 +1,86 @@
+#include <stdio.h>  // 包含标准输入输出库
+#include <stdlib.h> // 包含标准库函数，如malloc和free
+
+// 定义单链表节点结构体
+struct ListNode { // 定义ListNode结构体
+    int data;                    // 定义整型变量存储节点数据
+    struct ListNode* next;      // 定义指向下一个节点的指针
+};
+
+// 创建新节点
+struct ListNode* createNode(int data) { // 定义创建新节点的函数
+    struct ListNode* newNode = (struct ListNode*)malloc(sizeof(struct ListNode)); // 动态分配新节点的内存
+    if (newNode == NULL) { // 检查内存分配是否成功
+        printf("内存分配失败\n"); // 如果分配失败，输出错误信息
+        return NULL; // 返回NULL表示失败
+    }
+    newNode->data = data; // 将数据值存储到新节点
+    newNode->next = NULL; // 将新节点的next指针设置为NULL
+    return newNode; // 返回新创建的节点指针
+}
+
+// 使用快慢指针法查找链表的中间节点
+struct ListNode* findMiddleNode(struct ListNode* head) { // 定义查找中间节点的函数
+    if (head == NULL) { // 检查链表是否为空
+        return NULL; // 如果链表为空，返回NULL
+    }
+    
+    struct ListNode* slow = head; // 定义慢指针，初始化为头节点
+    struct ListNode* fast = head; // 定义快指针，初始化为头节点
+    
+    while (fast != NULL && fast->next != NULL) { // 当快指针和快指针的下一个节点都不为空时循环
+        slow = slow->next;        // 慢指针每次移动一步
+        fast = fast->next->next;  // 快指针每次移动两步
+    }
+    
+    return slow; // 返回慢指针指向的节点（中间节点）
+}
+
+// 在链表末尾添加节点
+void append(struct ListNode** head, int data) { // 定义在链表末尾添加节点的函数
+    struct ListNode* newNode = createNode(data); // 创建新节点
+    if (*head == NULL) { // 如果链表为空
+        *head = newNode; // 新节点成为头节点
+        return; // 返回
+    }
+    
+    struct ListNode* current = *head; // 从头节点开始遍历
+    while (current->next != NULL) { // 遍历到链表末尾
+        current = current->next; // 指针向后移动
+    }
+    current->next = newNode; // 将新节点连接到链表末尾
+}
+
+// 打印链表
+void printList(struct ListNode* head) { // 定义打印链表的函数
+    struct ListNode* current = head; // 从头节点开始遍历
+    while (current != NULL) { // 当当前节点不为空时循环
+        printf("%d ", current->data); // 输出当前节点的数据
+        current = current->next; // 指针向后移动到下一个节点
+    }
+    printf("\n"); // 输出换行符
+}
+
+int main() { // 主函数入口
+    struct ListNode* head = NULL; // 声明链表头节点指针，初始化为NULL
+    
+    // 创建一个单链表
+    printf("链表: "); // 输出提示信息
+    append(&head, 1); // 添加元素1
+    append(&head, 2); // 添加元素2
+    append(&head, 3); // 添加元素3
+    append(&head, 4); // 添加元素4
+    append(&head, 5); // 添加元素5
+    printList(head); // 打印链表
+    
+    // 查找链表的中间节点
+    struct ListNode* middle = findMiddleNode(head); // 调用查找中间节点函数
+    
+    if (middle != NULL) { // 检查是否找到中间节点
+        printf("链表的中间节点值为: %d\n", middle->data); // 输出中间节点的值
+    } else {
+        printf("链表为空\n"); // 如果链表为空，输出提示信息
+    }
+    
+    return 0; // 返回0表示程序正常结束
+}
