@@ -1,0 +1,23 @@
+#include <stdio.h>  // 包含标准输入输出库
+#include <stdlib.h> // 包含标准库函数
+#include <string.h> // 包含字符串处理函数
+
+// 定义包含字符串和长度的结构体
+struct StringWithLength { // 定义StringWithLength结构体
+    char str[100];    // 定义字符数组存储字符串，最大容量为99个字符+1个结束符
+    int length;       // 定义整型变量存储字符串的实际长度
+};
+
+int main() { // 主函数入口
+    struct StringWithLength s; // 声明一个StringWithLength类型的结构体变量s
+    
+    printf("请输入一个字符串: "); // 输出提示信息
+    scanf("%s", s.str); // 从标准输入读取字符串并存储到结构体的str字段中
+    
+    s.length = strlen(s.str); // 调用strlen函数计算字符串的实际长度并存储到length字段中
+    
+    printf("字符串内容: %s\n", s.str); // 输出字符串内容
+    printf("字符串长度: %d\n", s.length); // 输出字符串长度
+    
+    return 0; // 返回0表示程序正常结束
+}
