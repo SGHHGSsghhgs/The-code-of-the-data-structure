@@ -1,0 +1,85 @@
+#include <stdio.h>  // 包含标准输入输出库
+#include <stdlib.h> // 包含标准库函数，如malloc和free
+
+// 定义链栈的节点结构体
+struct Node { // 定义Node结构体作为栈节点
+    int data;              // 定义整型变量存储节点数据
+    struct Node* next;     // 定义指向下一个节点的指针
+};
+
+// 定义链栈结构体
+struct LinkedStack { // 定义LinkedStack结构体
+    struct Node* top; // 定义指向栈顶节点的指针
+};
+
+// 初始化链栈
+struct LinkedStack* initStack() { // 定义初始化栈的函数，返回栈指针
+    struct LinkedStack* stack = (struct LinkedStack*)malloc(sizeof(struct LinkedStack)); // 动态分配栈结构体的内存
+    if (stack == NULL) { // 检查内存分配是否成功
+        printf("内存分配失败\n"); // 如果分配失败，输出错误信息
+        return NULL; // 返回NULL表示失败
+    }
+    stack->top = NULL; // 将栈顶指针设置为NULL，表示栈为空
+    return stack; // 返回新创建的栈指针
+}
+
+// 判断栈是否为空
+int isEmpty(struct LinkedStack* stack) { // 定义判断栈是否为空的函数
+    return stack->top == NULL; // 如果栈顶指针为NULL，返回1（真），否则返回0（假）
+}
+
+// 入栈操作
+void push(struct LinkedStack* stack, int value) { // 定义入栈函数，接收栈指针和要压入的值
+    struct Node* newNode = (struct Node*)malloc(sizeof(struct Node)); // 动态分配新节点的内存
+    if (newNode == NULL) { // 检查内存分配是否成功
+        printf("内存分配失败\n"); // 如果分配失败，输出错误信息
+        return; // 返回，不执行入栈操作
+    }
+    
+    newNode->data = value; // 将值存储到新节点的数据字段
+    newNode->next = stack->top; // 将新节点的next指针指向原来的栈顶节点
+    stack->top = newNode; // 将栈顶指针更新为新节点
+}
+
+// 出栈操作
+int pop(struct LinkedStack* stack) { // 定义出栈函数，接收栈指针
+    if (isEmpty(stack)) { // 检查栈是否为空
+        printf("栈为空，无法出栈\n"); // 如果栈空，输出错误信息
+        return -1; // 返回-1表示错误
+    }
+    
+    struct Node* temp = stack->top; // 保存原栈顶节点的指针到临时变量
+    int value = temp->data; // 获取原栈顶节点的数据值
+    
+    stack->top = stack->top->next; // 将栈顶指针指向下一个节点
+    free(temp); // 释放原栈顶节点占用的内存
+    temp = NULL; // 将临时指针设置为NULL，避免悬空指针
+    
+    return value; // 返回出栈的值
+}
+
+int main() { // 主函数入口
+    struct LinkedStack* stack = initStack(); // 初始化链栈
+    
+    if (stack == NULL) { // 检查栈初始化是否成功
+        return 1; // 如果初始化失败，返回1
+    }
+    
+    // 测试入栈操作
+    printf("入栈操作: 1, 2, 3\n"); // 输出操作提示
+    push(stack, 1); // 向栈压入元素1
+    push(stack, 2); // 向栈压入元素2
+    push(stack, 3); // 向栈压入元素3
+    
+    // 测试出栈操作
+    printf("出栈操作结果: "); // 输出操作提示
+    while (!isEmpty(stack)) { // 当栈不为空时循环
+        printf("%d ", pop(stack)); // 出栈并输出元素
+    }
+    printf("\n"); // 输出换行符
+    
+    free(stack); // 释放栈结构体占用的内存
+    stack = NULL; // 将栈指针设置为NULL
+    
+    return 0; // 返回0表示程序正常结束
+}
