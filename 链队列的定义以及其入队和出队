@@ -1,0 +1,99 @@
+#include <stdio.h>  // 包含标准输入输出库
+#include <stdlib.h> // 包含标准库函数，如malloc和free
+
+// 定义链队列的节点结构体
+struct Node { // 定义Node结构体作为队列节点
+    int data;              // 定义整型变量存储节点数据
+    struct Node* next;     // 定义指向下一个节点的指针
+};
+
+// 定义链队列结构体
+struct LinkedQueue { // 定义LinkedQueue结构体
+    struct Node* front; // 定义指向队首节点的指针
+    struct Node* rear;  // 定义指向队尾节点的指针
+};
+
+// 初始化链队列
+struct LinkedQueue* initQueue() { // 定义初始化队列的函数，返回队列指针
+    struct LinkedQueue* queue = (struct LinkedQueue*)malloc(sizeof(struct LinkedQueue)); // 动态分配队列结构体的内存
+    if (queue == NULL) { // 检查内存分配是否成功
+        printf("内存分配失败\n"); // 如果分配失败，输出错误信息
+        return NULL; // 返回NULL表示失败
+    }
+    queue->front = NULL; // 将队首指针设置为NULL
+    queue->rear = NULL;  // 将队尾指针设置为NULL
+    return queue; // 返回新创建的队列指针
+}
+
+// 判断队列是否为空
+int isEmpty(struct LinkedQueue* queue) { // 定义判断队列是否为空的函数
+    return queue->front == NULL; // 如果队首指针为NULL，返回1（真），否则返回0（假）
+}
+
+// 入队操作
+void enqueue(struct LinkedQueue* queue, int value) { // 定义入队函数，接收队列指针和要入队的值
+    struct Node* newNode = (struct Node*)malloc(sizeof(struct Node)); // 动态分配新节点的内存
+    if (newNode == NULL) { // 检查内存分配是否成功
+        printf("内存分配失败\n"); // 如果分配失败，输出错误信息
+        return; // 返回，不执行入队操作
+    }
+    
+    newNode->data = value; // 将值存储到新节点的数据字段
+    newNode->next = NULL;  // 将新节点的next指针设置为NULL
+    
+    if (isEmpty(queue)) { // 如果队列为空
+        queue->front = newNode; // 新节点既是队首也是队尾
+        queue->rear = newNode;  // 新节点既是队首也是队尾
+    } else {
+        queue->rear->next = newNode; // 将当前队尾节点的next指针指向新节点
+        queue->rear = newNode;       // 将队尾指针更新为新节点
+    }
+}
+
+// 出队操作
+int dequeue(struct LinkedQueue* queue) { // 定义出队函数，接收队列指针
+    if (isEmpty(queue)) { // 检查队列是否为空
+        printf("队列为空，无法出队\n"); // 如果队空，输出错误信息
+        return -1; // 返回-1表示错误
+    }
+    
+    struct Node* temp = queue->front; // 保存队首节点的指针到临时变量
+    int value = temp->data; // 获取队首节点的数据值
+    
+    queue->front = queue->front->next; // 将队首指针指向下一个节点
+    
+    if (queue->front == NULL) { // 如果队首指针变为NULL（队列变为空）
+        queue->rear = NULL; // 同时将队尾指针也设置为NULL
+    }
+    
+    free(temp); // 释放原队首节点占用的内存
+    temp = NULL; // 将临时指针设置为NULL，避免悬空指针
+    
+    return value; // 返回出队的值
+}
+
+int main() { // 主函数入口
+    struct LinkedQueue* queue = initQueue(); // 初始化链队列
+    
+    if (queue == NULL) { // 检查队列初始化是否成功
+        return 1; // 如果初始化失败，返回1
+    }
+    
+    // 测试入队操作
+    printf("入队操作: 1, 2, 3\n"); // 输出操作提示
+    enqueue(queue, 1); // 向队列添加元素1
+    enqueue(queue, 2); // 向队列添加元素2
+    enqueue(queue, 3); // 向队列添加元素3
+    
+    // 测试出队操作
+    printf("出队操作结果: "); // 输出操作提示
+    while (!isEmpty(queue)) { // 当队列不为空时循环
+        printf("%d ", dequeue(queue)); // 出队并输出元素
+    }
+    printf("\n"); // 输出换行符
+    
+    free(queue); // 释放队列结构体占用的内存
+    queue = NULL; // 将队列指针设置为NULL
+    
+    return 0; // 返回0表示程序正常结束
+}
