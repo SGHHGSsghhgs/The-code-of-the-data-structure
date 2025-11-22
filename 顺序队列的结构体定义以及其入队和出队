@@ -1,0 +1,81 @@
+#include <stdio.h>  // 包含标准输入输出库
+#include <stdlib.h> // 包含标准库函数
+
+#define MAX_SIZE 100 // 定义队列的最大容量
+
+// 定义顺序队列结构体
+struct Queue { // 定义Queue结构体
+    int data[MAX_SIZE]; // 定义整型数组作为队列的存储空间，容量为MAX_SIZE
+    int front;          // 定义队首指针，记录队首元素的索引位置
+    int rear;           // 定义队尾指针，记录队尾元素的索引位置
+};
+
+// 初始化队列
+void initQueue(struct Queue* queue) { // 定义初始化队列的函数
+    queue->front = -1; // 将队首指针初始化为-1，表示队列为空
+    queue->rear = -1;  // 将队尾指针初始化为-1，表示队列为空
+}
+
+// 判断队列是否为空
+int isEmpty(struct Queue* queue) { // 定义判断队列是否为空的函数
+    return queue->front == -1; // 如果队首指针为-1，返回1（真），否则返回0（假）
+}
+
+// 判断队列是否已满
+int isFull(struct Queue* queue) { // 定义判断队列是否已满的函数
+    return queue->rear == MAX_SIZE - 1; // 如果队尾指针等于最大容量-1，返回1（真），否则返回0（假）
+}
+
+// 入队操作
+void enqueue(struct Queue* queue, int value) { // 定义入队函数，接收队列指针和要入队的值
+    if (isFull(queue)) { // 检查队列是否已满
+        printf("队列已满，无法入队\n"); // 如果队满，输出错误信息
+        return; // 返回，不执行入队操作
+    }
+    
+    if (isEmpty(queue)) { // 如果队列为空（第一次添加元素）
+        queue->front = 0; // 设置队首指针为0
+    }
+    
+    queue->rear++; // 队尾指针向后移动一位
+    queue->data[queue->rear] = value; // 将新值存储到队尾位置
+}
+
+// 出队操作
+int dequeue(struct Queue* queue) { // 定义出队函数，接收队列指针
+    if (isEmpty(queue)) { // 检查队列是否为空
+        printf("队列为空，无法出队\n"); // 如果队空，输出错误信息
+        return -1; // 返回-1表示错误
+    }
+    
+    int value = queue->data[queue->front]; // 获取队首元素的值
+    
+    if (queue->front == queue->rear) { // 如果队列中只有一个元素
+        queue->front = -1; // 重置队首指针为-1
+        queue->rear = -1;  // 重置队尾指针为-1
+    } else {
+        queue->front++; // 队首指针向后移动一位
+    }
+    
+    return value; // 返回出队的值
+}
+
+int main() { // 主函数入口
+    struct Queue q; // 声明一个Queue类型的结构体变量q
+    initQueue(&q); // 初始化队列
+    
+    // 测试入队操作
+    printf("入队操作: 1, 2, 3\n"); // 输出操作提示
+    enqueue(&q, 1); // 向队列添加元素1
+    enqueue(&q, 2); // 向队列添加元素2
+    enqueue(&q, 3); // 向队列添加元素3
+    
+    // 测试出队操作
+    printf("出队操作结果: "); // 输出操作提示
+    while (!isEmpty(&q)) { // 当队列不为空时循环
+        printf("%d ", dequeue(&q)); // 出队并输出元素
+    }
+    printf("\n"); // 输出换行符
+    
+    return 0; // 返回0表示程序正常结束
+}
