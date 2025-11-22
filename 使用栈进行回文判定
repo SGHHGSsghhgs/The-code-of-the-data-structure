@@ -1,0 +1,110 @@
+#include <stdio.h>  // 包含标准输入输出库
+#include <stdlib.h> // 包含标准库函数，如malloc和free
+#include <string.h> // 包含字符串处理函数，如strlen
+#include <ctype.h>  // 包含字符处理函数，如tolower和isalnum
+
+#define MAX_SIZE 100 // 定义栈的最大容量
+
+// 定义栈结构体
+struct Stack { // 定义Stack结构体
+    char data[MAX_SIZE]; // 定义字符数组作为栈的存储空间
+    int top;            // 定义栈顶指针，记录栈顶元素的索引
+};
+
+// 初始化栈
+void initStack(struct Stack* stack) { // 定义初始化栈的函数
+    stack->top = -1; // 将栈顶指针设置为-1，表示栈为空
+}
+
+// 判断栈是否为空
+int isEmpty(struct Stack* stack) { // 定义判断栈是否为空的函数
+    return stack->top == -1; // 如果栈顶指针为-1，返回1（真），否则返回0（假）
+}
+
+// 判断栈是否已满
+int isFull(struct Stack* stack) { // 定义判断栈是否已满的函数
+    return stack->top == MAX_SIZE - 1; // 如果栈顶指针等于最大容量-1，返回1（真），否则返回0（假）
+}
+
+// 入栈操作
+void push(struct Stack* stack, char value) { // 定义入栈函数，接收栈指针和要压入的字符
+    if (isFull(stack)) { // 检查栈是否已满
+        printf("栈溢出\n"); // 如果栈满，输出错误信息
+        return; // 返回，不执行入栈操作
+    }
+    stack->top++; // 栈顶指针向后移动一位
+    stack->data[stack->top] = value; // 将新字符存储到栈顶位置
+}
+
+// 出栈操作
+char pop(struct Stack* stack) { // 定义出栈函数，接收栈指针
+    if (isEmpty(stack)) { // 检查栈是否为空
+        printf("栈为空\n"); // 如果栈空，输出错误信息
+        return '\0'; // 返回空字符表示错误
+    }
+    char value = stack->data[stack->top]; // 获取栈顶元素的字符
+    stack->top--; // 栈顶指针向前移动一位
+    return value; // 返回栈顶元素的字符
+}
+
+// 预处理字符串：只保留字母和数字，并转换为小写
+void preprocessString(char* str) { // 定义预处理字符串的函数
+    int len = strlen(str); // 获取原字符串长度
+    int j = 0; // 定义新字符串的索引
+    
+    for (int i = 0; i < len; i++) { // 遍历原字符串的每个字符
+        if (isalnum(str[i])) { // 如果当前字符是字母或数字
+            str[j] = tolower(str[i]); // 将字符转换为小写并存储到新位置
+            j++; // 新字符串索引向后移动
+        }
+    }
+    str[j] = '\0'; // 在新字符串末尾添加结束符
+}
+
+// 回文判定函数
+int isPalindrome(char* str) { // 定义回文判定函数
+    struct Stack stack; // 声明一个栈变量
+    initStack(&stack); // 初始化栈
+    
+    int len = strlen(str); // 获取字符串长度
+    
+    // 将字符串的所有字符压入栈中
+    for (int i = 0; i < len; i++) { // 遍历字符串的每个字符
+        push(&stack, str[i]); // 将当前字符压入栈
+    }
+    
+    // 比较字符串和从栈中弹出的字符序列
+    for (int i = 0; i < len; i++) { // 遍历字符串的每个字符
+        if (str[i] != pop(&stack)) { // 将当前字符与从栈中弹出的字符比较
+            return 0; // 如果不相等，返回0（不是回文）
+        }
+    }
+    
+    return 1; // 如果所有字符都匹配，返回1（是回文）
+}
+
+int main() { // 主函数入口
+    char str[MAX_SIZE]; // 声明字符数组存储用户输入的字符串
+    
+    printf("请输入一个字符串: "); // 输出提示信息
+    fgets(str, sizeof(str), stdin); // 从标准输入读取字符串（包含空格）
+    
+    // 移除fgets读取的换行符
+    int len = strlen(str); // 获取字符串长度
+    if (str[len - 1] == '\n') { // 检查最后一个字符是否为换行符
+        str[len - 1] = '\0'; // 将换行符替换为结束符
+        len--; // 更新字符串长度
+    }
+    
+    // 预处理字符串
+    preprocessString(str); // 调用预处理函数，过滤非字母数字字符并转换为小写
+    
+    // 判断是否为回文
+    if (isPalindrome(str)) { // 调用回文判定函数
+        printf("该字符串是回文\n"); // 输出结果：是回文
+    } else {
+        printf("该字符串不是回文\n"); // 输出结果：不是回文
+    }
+    
+    return 0; // 返回0表示程序正常结束
+}
