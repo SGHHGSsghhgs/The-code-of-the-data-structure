@@ -1,0 +1,88 @@
+#include <stdio.h>  // 包含标准输入输出库
+#include <stdlib.h> // 包含标准库函数，如malloc和free
+
+#define MAX_SIZE 32 // 定义栈的最大容量（32位整数最多需要32个二进制位）
+
+// 定义栈结构体
+struct Stack { // 定义Stack结构体
+    int data[MAX_SIZE]; // 定义整型数组作为栈的存储空间
+    int top;           // 定义栈顶指针，记录栈顶元素的索引
+};
+
+// 初始化栈
+void initStack(struct Stack* stack) { // 定义初始化栈的函数
+    stack->top = -1; // 将栈顶指针设置为-1，表示栈为空
+}
+
+// 判断栈是否为空
+int isEmpty(struct Stack* stack) { // 定义判断栈是否为空的函数
+    return stack->top == -1; // 如果栈顶指针为-1，返回1（真），否则返回0（假）
+}
+
+// 判断栈是否已满
+int isFull(struct Stack* stack) { // 定义判断栈是否已满的函数
+    return stack->top == MAX_SIZE - 1; // 如果栈顶指针等于最大容量-1，返回1（真），否则返回0（假）
+}
+
+// 入栈操作
+void push(struct Stack* stack, int value) { // 定义入栈函数，接收栈指针和要压入的值
+    if (isFull(stack)) { // 检查栈是否已满
+        printf("栈溢出\n"); // 如果栈满，输出错误信息
+        return; // 返回，不执行入栈操作
+    }
+    stack->top++; // 栈顶指针向后移动一位
+    stack->data[stack->top] = value; // 将新值存储到栈顶位置
+}
+
+// 出栈操作
+int pop(struct Stack* stack) { // 定义出栈函数，接收栈指针
+    if (isEmpty(stack)) { // 检查栈是否为空
+        printf("栈为空\n"); // 如果栈空，输出错误信息
+        return -1; // 返回-1表示错误
+    }
+    int value = stack->data[stack->top]; // 获取栈顶元素的值
+    stack->top--; // 栈顶指针向前移动一位
+    return value; // 返回栈顶元素的值
+}
+
+// 十进制转二进制函数
+void decimalToBinary(int decimal) { // 定义十进制转二进制函数
+    struct Stack stack; // 声明一个栈变量
+    initStack(&stack); // 初始化栈
+    
+    if (decimal == 0) { // 如果输入的十进制数为0
+        printf("0的二进制表示: 0\n"); // 直接输出结果
+        return; // 返回
+    }
+    
+    int originalDecimal = decimal; // 保存原始十进制数用于输出
+    
+    // 将十进制数转换为二进制并存储到栈中
+    while (decimal > 0) { // 当十进制数大于0时循环
+        push(&stack, decimal % 2); // 将当前十进制数除以2的余数压入栈
+        decimal = decimal / 2; // 将十进制数除以2，准备下一次循环
+    }
+    
+    printf("%d的二进制表示: ", originalDecimal); // 输出提示信息和原始十进制数
+    
+    // 从栈中弹出元素并输出，得到二进制结果
+    while (!isEmpty(&stack)) { // 当栈不为空时循环
+        printf("%d", pop(&stack)); // 弹出栈顶元素并输出
+    }
+    printf("\n"); // 输出换行符
+}
+
+int main() { // 主函数入口
+    int n; // 声明整型变量n用于存储用户输入的十进制数
+    printf("请输入一个十进制数: "); // 输出提示信息
+    scanf("%d", &n); // 从标准输入读取十进制数
+    
+    if (n < 0) { // 检查输入是否为负数
+        printf("请输入非负整数\n"); // 输出错误信息
+        return 1; // 返回1表示程序异常结束
+    }
+    
+    decimalToBinary(n); // 调用十进制转二进制函数
+    
+    return 0; // 返回0表示程序正常结束
+}
