@@ -1,0 +1,68 @@
+#include <stdio.h>  // 包含标准输入输出库
+#include <stdlib.h> // 包含标准库函数
+
+#define MAX_SIZE 100 // 定义栈的最大容量
+
+// 定义顺序栈结构体
+struct Stack { // 定义Stack结构体
+    int data[MAX_SIZE]; // 定义整型数组作为栈的存储空间，容量为MAX_SIZE
+    int top;           // 定义栈顶指针，记录栈顶元素的索引位置
+};
+
+// 初始化栈
+void initStack(struct Stack* stack) { // 定义初始化栈的函数
+    stack->top = -1; // 将栈顶指针初始化为-1，表示栈为空
+}
+
+// 判断栈是否为空
+int isEmpty(struct Stack* stack) { // 定义判断栈是否为空的函数
+    return stack->top == -1; // 如果栈顶指针为-1，返回1（真），否则返回0（假）
+}
+
+// 判断栈是否已满
+int isFull(struct Stack* stack) { // 定义判断栈是否已满的函数
+    return stack->top == MAX_SIZE - 1; // 如果栈顶指针等于最大容量-1，返回1（真），否则返回0（假）
+}
+
+// 入栈操作
+void push(struct Stack* stack, int value) { // 定义入栈函数，接收栈指针和要压入的值
+    if (isFull(stack)) { // 检查栈是否已满
+        printf("栈已满，无法入栈\n"); // 如果栈满，输出错误信息
+        return; // 返回，不执行入栈操作
+    }
+    
+    stack->top++; // 栈顶指针向后移动一位
+    stack->data[stack->top] = value; // 将新值存储到栈顶位置
+}
+
+// 出栈操作
+int pop(struct Stack* stack) { // 定义出栈函数，接收栈指针
+    if (isEmpty(stack)) { // 检查栈是否为空
+        printf("栈为空，无法出栈\n"); // 如果栈空，输出错误信息
+        return -1; // 返回-1表示错误
+    }
+    
+    int value = stack->data[stack->top]; // 获取栈顶元素的值
+    stack->top--; // 栈顶指针向前移动一位
+    return value; // 返回栈顶元素的值
+}
+
+int main() { // 主函数入口
+    struct Stack s; // 声明一个Stack类型的结构体变量s
+    initStack(&s); // 初始化栈
+    
+    // 测试入栈操作
+    printf("入栈操作: 1, 2, 3\n"); // 输出操作提示
+    push(&s, 1); // 向栈压入元素1
+    push(&s, 2); // 向栈压入元素2
+    push(&s, 3); // 向栈压入元素3
+    
+    // 测试出栈操作
+    printf("出栈操作结果: "); // 输出操作提示
+    while (!isEmpty(&s)) { // 当栈不为空时循环
+        printf("%d ", pop(&s)); // 出栈并输出元素
+    }
+    printf("\n"); // 输出换行符
+    
+    return 0; // 返回0表示程序正常结束
+}
