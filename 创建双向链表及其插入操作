@@ -1,0 +1,155 @@
+#include <stdio.h>  // 包含标准输入输出库
+#include <stdlib.h> // 包含标准库函数，如malloc和free
+
+// 定义双向链表节点结构体
+struct DoublyListNode { // 定义DoublyListNode结构体
+    int data;                              // 定义整型变量存储节点数据
+    struct DoublyListNode* next;          // 定义指向下一个节点的指针
+    struct DoublyListNode* prev;          // 定义指向前一个节点的指针
+};
+
+// 创建新节点
+struct DoublyListNode* createNode(int data) { // 定义创建新节点的函数
+    struct DoublyListNode* newNode = (struct DoublyListNode*)malloc(sizeof(struct DoublyListNode)); // 动态分配新节点的内存
+    if (newNode == NULL) { // 检查内存分配是否成功
+        printf("内存分配失败\n"); // 如果分配失败，输出错误信息
+        return NULL; // 返回NULL表示失败
+    }
+    newNode->data = data; // 将数据值存储到新节点
+    newNode->next = NULL; // 将新节点的next指针设置为NULL
+    newNode->prev = NULL; // 将新节点的prev指针设置为NULL
+    return newNode; // 返回新创建的节点指针
+}
+
+// 在双向链表头部插入节点
+struct DoublyListNode* insertAtHead(struct DoublyListNode* head, int data) { // 定义头插函数
+    struct DoublyListNode* newNode = createNode(data); // 创建新节点
+    if (newNode == NULL) { // 检查节点创建是否成功
+        return head; // 如果创建失败，返回原头节点
+    }
+    
+    if (head == NULL) { // 如果链表为空
+        return newNode; // 新节点成为头节点
+    }
+    
+    newNode->next = head; // 将新节点的next指针指向原头节点
+    head->prev = newNode; // 将原头节点的prev指针指向新节点
+    return newNode; // 返回新节点作为新的头节点
+}
+
+// 在双向链表尾部插入节点
+struct DoublyListNode* insertAtTail(struct DoublyListNode* head, int data) { // 定义尾插函数
+    struct DoublyListNode* newNode = createNode(data); // 创建新节点
+    if (newNode == NULL) { // 检查节点创建是否成功
+        return head; // 如果创建失败，返回原头节点
+    }
+    
+    if (head == NULL) { // 如果链表为空
+        return newNode; // 新节点成为头节点
+    }
+    
+    struct DoublyListNode* current = head; // 从头节点开始遍历
+    while (current->next != NULL) { // 遍历到链表末尾
+        current = current->next; // 指针向后移动
+    }
+    current->next = newNode; // 将新节点连接到链表末尾
+    newNode->prev = current; // 将新节点的prev指针指向前一个节点
+    return head; // 返回原头节点
+}
+
+// 在指定位置插入节点
+struct DoublyListNode* insertAtPosition(struct DoublyListNode* head, int data, int position) { // 定义在指定位置插入节点的函数
+    if (position <= 0) { // 检查位置是否有效
+        return insertAtHead(head, data); // 如果位置小于等于0，在头部插入
+    }
+    
+    struct DoublyListNode* newNode = createNode(data); // 创建新节点
+    if (newNode == NULL) { // 检查节点创建是否成功
+        return head; // 如果创建失败，返回原头节点
+    }
+    
+    if (position == 0) { // 如果位置为0
+        return insertAtHead(head, data); // 在头部插入
+    }
+    
+    struct DoublyListNode* current = head; // 从头节点开始遍历
+    int count = 0; // 定义计数器
+    
+    // 找到指定位置的前一个节点
+    while (current != NULL && count < position - 1) { // 遍历到指定位置的前一个节点
+        current = current->next; // 指针向后移动
+        count++; // 计数器加1
+    }
+    
+    // 如果到达链表末尾但位置仍然未到，说明位置超出范围
+    if (current == NULL) { // 检查是否到达链表末尾
+        free(newNode); // 释放新节点的内存
+        return head; // 返回原头节点
+    }
+    
+    newNode->next = current->next; // 将新节点的next指针指向当前节点的下一个节点
+    if (current->next != NULL) { // 如果当前节点的下一个节点不为空
+        current->next->prev = newNode; // 将下一个节点的prev指针指向新节点
+    }
+    current->next = newNode; // 将当前节点的next指针指向新节点
+    newNode->prev = current; // 将新节点的prev指针指向前一个节点
+    return head; // 返回头节点
+}
+
+// 正向打印双向链表
+void printForward(struct DoublyListNode* head) { // 定义正向打印链表的函数
+    struct DoublyListNode* current = head; // 从头节点开始遍历
+    printf("正向遍历: "); // 输出提示信息
+    while (current != NULL) { // 当当前节点不为空时循环
+        printf("%d ", current->data); // 输出当前节点的数据
+        current = current->next; // 指针向后移动到下一个节点
+    }
+    printf("\n"); // 输出换行符
+}
+
+// 反向打印双向链表
+void printBackward(struct DoublyListNode* head) { // 定义反向打印链表的函数
+    if (head == NULL) { // 检查链表是否为空
+        printf("反向遍历: \n"); // 输出提示信息
+        return; // 返回
+    }
+    
+    struct DoublyListNode* current = head; // 从头节点开始遍历
+    while (current->next != NULL) { // 遍历到链表末尾
+        current = current->next; // 指针向后移动
+    }
+    
+    printf("反向遍历: "); // 输出提示信息
+    while (current != NULL) { // 从末尾节点开始向前遍历
+        printf("%d ", current->data); // 输出当前节点的数据
+        current = current->prev; // 指针向前移动到前一个节点
+    }
+    printf("\n"); // 输出换行符
+}
+
+int main() { // 主函数入口
+    struct DoublyListNode* head = NULL; // 声明双向链表头节点指针，初始化为NULL
+    
+    // 头部插入测试
+    printf("头部插入测试:\n"); // 输出提示信息
+    head = insertAtHead(head, 3); // 在头部插入元素3
+    head = insertAtHead(head, 2); // 在头部插入元素2
+    head = insertAtHead(head, 1); // 在头部插入元素1
+    printForward(head); // 正向打印链表
+    printBackward(head); // 反向打印链表
+    
+    // 尾部插入测试
+    printf("\n尾部插入测试:\n"); // 输出提示信息
+    head = insertAtTail(head, 4); // 在尾部插入元素4
+    head = insertAtTail(head, 5); // 在尾部插入元素5
+    printForward(head); // 正向打印链表
+    printBackward(head); // 反向打印链表
+    
+    // 指定位置插入测试
+    printf("\n指定位置插入测试:\n"); // 输出提示信息
+    head = insertAtPosition(head, 99, 2); // 在位置2插入元素99
+    printForward(head); // 正向打印链表
+    printBackward(head); // 反向打印链表
+    
+    return 0; // 返回0表示程序正常结束
+}
