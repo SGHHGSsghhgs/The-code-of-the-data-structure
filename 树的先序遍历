@@ -1,0 +1,18 @@
+#include <stdio.h>  // 包含标准输入输出库
+#include <stdlib.h> // 包含标准库函数，如malloc和free
+
+// 定义树节点结构
+struct TreeNode { // 定义TreeNode结构体
+    int data;              // 节点存储的数据值
+    struct TreeNode* left;  // 指向左子节点的指针
+    struct TreeNode* right; // 指向右子节点的指针
+};
+
+// 树的先序遍历函数（递归实现）
+void preorderTraversal(struct TreeNode* root) { // 定义先序遍历函数，接收根节点指针
+    if (root != NULL) { // 如果当前节点不为空（递归终止条件）
+        printf("%d ", root->data);      // 首先访问当前节点（输出节点数据）
+        preorderTraversal(root->left);  // 然后递归遍历左子树
+        preorderTraversal(root->right); // 最后递归遍历右子树
+    }
+}
