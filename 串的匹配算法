@@ -1,0 +1,28 @@
+#include <stdio.h>  // 包含标准输入输出库
+#include <stdlib.h> // 包含标准库函数
+#include <string.h> // 包含字符串处理函数
+
+// 串的朴素匹配算法（Brute Force算法）
+int stringMatch(char* text, char* pattern) { // 定义串匹配函数，接收主串text和模式串pattern
+    int textLen = strlen(text);    // 获取主串的长度
+    int patternLen = strlen(pattern); // 获取模式串的长度
+    
+    // 遍历主串中可能的起始位置
+    for (int i = 0; i <= textLen - patternLen; i++) { // 从主串的第0个位置开始，到textLen-patternLen位置结束
+        int j; // 声明匹配字符的索引变量
+        
+        // 逐个字符比较
+        for (j = 0; j < patternLen; j++) { // 从模式串的第0个字符开始比较
+            if (text[i + j] != pattern[j]) { // 如果当前字符不匹配
+                break; // 跳出内层循环，尝试下一个起始位置
+            }
+        }
+        
+        // 如果模式串的所有字符都匹配成功
+        if (j == patternLen) { // 如果内层循环正常结束（没有被break中断）
+            return i; // 返回匹配开始的位置索引
+        }
+    }
+    
+    return -1; // 如果没有找到匹配，返回-1
+}
