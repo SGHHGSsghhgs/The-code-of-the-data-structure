@@ -1,0 +1,36 @@
+#include <stdio.h>  // 包含标准输入输出库，用于printf等函数
+#include <stdlib.h> // 包含标准库函数，如malloc和free
+
+// 交换数组中两个元素的位置
+void swap(int* a, int* b) { // 定义swap函数，接收两个整型指针参数
+    int temp = *a; // 将指针a指向的值保存到临时变量temp中
+    *a = *b;       // 将指针b指向的值赋给指针a指向的位置
+    *b = temp;     // 将临时变量temp的值赋给指针b指向的位置
+}
+
+// 分区函数：选择最后一个元素作为基准，将数组分为两部分
+int partition(int arr[], int low, int high) { // 定义partition函数，接收数组和左右边界索引
+    int pivot = arr[high]; // 选择数组最后一个元素作为基准值
+    int i = (low - 1);     // 初始化小于基准值区域的索引为low-1
+
+    for (int j = low; j <= high - 1; j++) { // 循环遍历从low到high-1的所有元素
+        if (arr[j] <= pivot) { // 如果当前元素小于或等于基准值
+            i++; // 小于基准值区域的索引向后移动一位
+            swap(&arr[i], &arr[j]); // 交换当前元素和小于基准值区域边界的元素
+        }
+    }
+    swap(&arr[i + 1], &arr[high]); // 将基准值放到正确的位置（小于基准值区域之后）
+    return (i + 1); // 返回基准值的最终位置索引
+}
+
+// 快速排序主函数
+void quickSort(int arr[], int low, int high) { // 定义快速排序函数，接收数组和左右边界索引
+    if (low < high) { // 如果左边界小于右边界（数组长度大于1）
+        int pi = partition(arr, low, high); // 调用partition函数获取基准值的位置
+
+        // 递归排序基准值左边的子数组（小于基准值的部分）
+        quickSort(arr, low, pi - 1); // 对基准值左边的子数组进行快速排序
+        // 递归排序基准值右边的子数组（大于基准值的部分）
+        quickSort(arr, pi + 1, high); // 对基准值右边的子数组进行快速排序
+    }
+}
