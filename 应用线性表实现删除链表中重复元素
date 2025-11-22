@@ -1,0 +1,91 @@
+#include <stdio.h>  // 包含标准输入输出库
+#include <stdlib.h> // 包含标准库函数，如malloc和free
+
+// 定义单链表节点结构体
+struct ListNode { // 定义ListNode结构体
+    int data;                    // 定义整型变量存储节点数据
+    struct ListNode* next;      // 定义指向下一个节点的指针
+};
+
+// 创建新节点
+struct ListNode* createNode(int data) { // 定义创建新节点的函数
+    struct ListNode* newNode = (struct ListNode*)malloc(sizeof(struct ListNode)); // 动态分配新节点的内存
+    if (newNode == NULL) { // 检查内存分配是否成功
+        printf("内存分配失败\n"); // 如果分配失败，输出错误信息
+        return NULL; // 返回NULL表示失败
+    }
+    newNode->data = data; // 将数据值存储到新节点
+    newNode->next = NULL; // 将新节点的next指针设置为NULL
+    return newNode; // 返回新创建的节点指针
+}
+
+// 删除链表中的重复元素（保留第一个出现的元素）
+struct ListNode* removeDuplicates(struct ListNode* head) { // 定义删除重复元素的函数
+    if (head == NULL) { // 检查链表是否为空
+        return NULL; // 如果链表为空，直接返回NULL
+    }
+    
+    struct ListNode* current = head; // 定义当前节点指针，从头节点开始
+    
+    while (current != NULL && current->next != NULL) { // 当当前节点和下一个节点都不为空时循环
+        if (current->data == current->next->data) { // 如果当前节点和下一个节点的数据相同
+            struct ListNode* nodeToDelete = current->next; // 保存要删除的节点
+            current->next = current->next->next; // 跳过下一个节点（删除重复节点）
+            free(nodeToDelete); // 释放要删除节点的内存
+            nodeToDelete = NULL; // 将指针设置为NULL，避免悬空指针
+        } else { // 如果当前节点和下一个节点的数据不同
+            current = current->next; // 当前节点指针向后移动一位
+        }
+    }
+    
+    return head; // 返回处理后的链表头节点
+}
+
+// 在链表末尾添加节点
+void append(struct ListNode** head, int data) { // 定义在链表末尾添加节点的函数
+    struct ListNode* newNode = createNode(data); // 创建新节点
+    if (*head == NULL) { // 如果链表为空
+        *head = newNode; // 新节点成为头节点
+        return; // 返回
+    }
+    
+    struct ListNode* current = *head; // 从头节点开始遍历
+    while (current->next != NULL) { // 遍历到链表末尾
+        current = current->next; // 指针向后移动
+    }
+    current->next = newNode; // 将新节点连接到链表末尾
+}
+
+// 打印链表
+void printList(struct ListNode* head) { // 定义打印链表的函数
+    struct ListNode* current = head; // 从头节点开始遍历
+    while (current != NULL) { // 当当前节点不为空时循环
+        printf("%d ", current->data); // 输出当前节点的数据
+        current = current->next; // 指针向后移动到下一个节点
+    }
+    printf("\n"); // 输出换行符
+}
+
+int main() { // 主函数入口
+    struct ListNode* head = NULL; // 声明链表头节点指针，初始化为NULL
+    
+    // 创建一个包含重复元素的单链表
+    printf("原链表: "); // 输出提示信息
+    append(&head, 1); // 添加元素1
+    append(&head, 1); // 添加重复元素1
+    append(&head, 2); // 添加元素2
+    append(&head, 2); // 添加重复元素2
+    append(&head, 3); // 添加元素3
+    append(&head, 3); // 添加重复元素3
+    append(&head, 4); // 添加元素4
+    printList(head); // 打印原链表
+    
+    // 删除链表中的重复元素
+    head = removeDuplicates(head); // 调用删除重复元素函数
+    
+    // 输出删除重复元素后的结果
+    printf("删除重复元素后: "); // 输出提示信息
+    printList(head); // 打印处理后的链表
+    
+    return 0; // 返回0表示程序正常结束
+}
