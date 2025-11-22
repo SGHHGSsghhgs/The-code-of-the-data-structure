@@ -1,0 +1,83 @@
+#include <stdio.h>  // 包含标准输入输出库
+#include <stdlib.h> // 包含标准库函数，如malloc和free
+
+// 定义单链表节点结构体
+struct ListNode { // 定义ListNode结构体
+    int data;                    // 定义整型变量存储节点数据
+    struct ListNode* next;      // 定义指向下一个节点的指针
+};
+
+// 创建新节点
+struct ListNode* createNode(int data) { // 定义创建新节点的函数
+    struct ListNode* newNode = (struct ListNode*)malloc(sizeof(struct ListNode)); // 动态分配新节点的内存
+    if (newNode == NULL) { // 检查内存分配是否成功
+        printf("内存分配失败\n"); // 如果分配失败，输出错误信息
+        return NULL; // 返回NULL表示失败
+    }
+    newNode->data = data; // 将数据值存储到新节点
+    newNode->next = NULL; // 将新节点的next指针设置为NULL
+    return newNode; // 返回新创建的节点指针
+}
+
+// 就地逆置单链表
+struct ListNode* reverseList(struct ListNode* head) { // 定义逆置函数，接收链表头节点
+    struct ListNode* prev = NULL;    // 定义前一个节点指针，初始化为NULL
+    struct ListNode* current = head; // 定义当前节点指针，初始化为头节点
+    struct ListNode* next = NULL;   // 定义下一个节点指针，用于临时保存
+    
+    while (current != NULL) { // 当当前节点不为空时循环
+        next = current->next;  // 保存当前节点的下一个节点到next
+        current->next = prev;  // 将当前节点的next指针指向前一个节点
+        prev = current;        // 将prev指针移动到当前节点
+        current = next;        // 将current指针移动到下一个节点
+    }
+    
+    return prev; // 返回新的头节点（原链表的最后一个节点）
+}
+
+// 在链表末尾添加节点
+void append(struct ListNode** head, int data) { // 定义在链表末尾添加节点的函数
+    struct ListNode* newNode = createNode(data); // 创建新节点
+    if (*head == NULL) { // 如果链表为空
+        *head = newNode; // 新节点成为头节点
+        return; // 返回
+    }
+    
+    struct ListNode* current = *head; // 从头节点开始遍历
+    while (current->next != NULL) { // 遍历到链表末尾
+        current = current->next; // 指针向后移动
+    }
+    current->next = newNode; // 将新节点连接到链表末尾
+}
+
+// 打印链表
+void printList(struct ListNode* head) { // 定义打印链表的函数
+    struct ListNode* current = head; // 从头节点开始遍历
+    while (current != NULL) { // 当当前节点不为空时循环
+        printf("%d ", current->data); // 输出当前节点的数据
+        current = current->next; // 指针向后移动到下一个节点
+    }
+    printf("\n"); // 输出换行符
+}
+
+int main() { // 主函数入口
+    struct ListNode* head = NULL; // 声明链表头节点指针，初始化为NULL
+    
+    // 创建一个单链表
+    printf("原链表: "); // 输出提示信息
+    append(&head, 1); // 添加元素1
+    append(&head, 2); // 添加元素2
+    append(&head, 3); // 添加元素3
+    append(&head, 4); // 添加元素4
+    append(&head, 5); // 添加元素5
+    printList(head); // 打印原链表
+    
+    // 就地逆置单链表
+    head = reverseList(head); // 调用逆置函数，并更新头节点指针
+    
+    // 输出逆置后的结果
+    printf("逆置后链表: "); // 输出提示信息
+    printList(head); // 打印逆置后的链表
+    
+    return 0; // 返回0表示程序正常结束
+}
